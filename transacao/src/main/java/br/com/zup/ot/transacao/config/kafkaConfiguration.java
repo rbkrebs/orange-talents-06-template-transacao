@@ -3,7 +3,7 @@ package br.com.zup.ot.transacao.config;
 import br.com.zup.ot.transacao.transacao.EventoDeTransacaoDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -17,26 +17,21 @@ import java.util.Map;
 @Configuration
 public class kafkaConfiguration {
 
+    private final KafkaProperties kafkaProperties;
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapServer;
-
-    @Value(value = "${spring.kafka.consumer.group-id}")
-    private String groupId;
-
-    @Value(value = "${spring.kafka.consumer.key-deserializer}")
-    private String keyDeserializer;
-
-    @Value(value = "${spring.kafka.consumer.value-deserializer}")
-    private String valueDeserializer;
+    public kafkaConfiguration(KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
+    }
 
     @Bean
     public ConsumerFactory<String, EventoDeTransacaoDTO> consumerConfigurations() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServer);
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, this.keyDeserializer);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, this.valueDeserializer);
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, this.groupId);
+
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsumer().getKeyDeserializer());
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsumer().getValueDeserializer());
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProperties.getConsumer().getGroupId());
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaProperties.getConsumer().getAutoOffsetReset());
 
         return new DefaultKafkaConsumerFactory(properties, new StringDeserializer(), new JsonDeserializer<>(EventoDeTransacaoDTO.class, false));
     }

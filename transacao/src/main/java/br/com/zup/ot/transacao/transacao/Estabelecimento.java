@@ -1,9 +1,9 @@
 package br.com.zup.ot.transacao.transacao;
 
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 
 @Embeddable
-public class Estabelecimento {
+public class Estabelecimento{
 
     private String nome;
     private String cidade;

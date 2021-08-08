@@ -53,6 +53,9 @@ services:
       MYSQL_PASSWORD: romulo
       MYSQL_USER: romulo
       MYSQL_URL: jdbc:mysql://db_transacao:3307/transacao
+      KAFKA_HOST: kafka:29092
+      KAFKA_CONSUMER_GROUP_ID: minha-aplicacao
+      KAFKA_AUTO-OFFSET-RESET: latest
     networks:
       - proposta-net
 

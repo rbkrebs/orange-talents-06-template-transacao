@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 @Entity
 public class EventoDeTransacao {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String idTransacao;
     private BigDecimal valor;
     @Embedded
