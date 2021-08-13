@@ -19,6 +19,9 @@ public class EventoDeTransacao {
     private Cartao cartao;
     private String efetivadaEm;
 
+    @Deprecated
+    public EventoDeTransacao(){}
+
     public EventoDeTransacao(String idTransacao,
                              BigDecimal valor,
                              Estabelecimento estabelecimento,
@@ -29,5 +32,29 @@ public class EventoDeTransacao {
         this.estabelecimento = estabelecimento;
         this.cartao = cartao;
         this.efetivadaEm = efetivadaEm;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getIdTransacao() {
+        return idTransacao;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public Estabelecimento getEstabelecimento() {
+        return estabelecimento;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public String getEfetivadaEm() {
+        return efetivadaEm;
     }
 }

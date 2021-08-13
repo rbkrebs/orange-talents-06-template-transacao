@@ -1,6 +1,8 @@
 package br.com.zup.ot.transacao.transacao;
 
 
+import org.springframework.data.domain.Page;
+
 import java.math.BigDecimal;
 
 public class EventoDeTransacaoDTO {
@@ -33,6 +35,15 @@ public class EventoDeTransacaoDTO {
         this.efetivadaEm = efetivadaEm;
     }
 
+    public EventoDeTransacaoDTO(EventoDeTransacao eventoDeTransacao) {
+        this.id = eventoDeTransacao.getIdTransacao();
+        this.valor = eventoDeTransacao.getValor();
+        this.estabelecimento = eventoDeTransacao.getEstabelecimento();
+        this.cartao = eventoDeTransacao.getCartao();
+        this.efetivadaEm = eventoDeTransacao.getEfetivadaEm();
+    }
+
+
     public String getId() {
         return id;
     }
@@ -53,6 +64,11 @@ public class EventoDeTransacaoDTO {
         return efetivadaEm;
     }
 
+    public static Page<EventoDeTransacaoDTO> fromModel(Page<EventoDeTransacao> ultimasTransacoes) {
+
+        return ultimasTransacoes.map(EventoDeTransacaoDTO::new);
+
+    }
 
 
 
