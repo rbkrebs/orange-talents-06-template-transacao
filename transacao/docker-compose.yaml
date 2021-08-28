@@ -52,39 +52,60 @@ services:
     environment:
       MYSQL_PASSWORD: romulo
       MYSQL_USER: romulo
-      MYSQL_URL: jdbc:mysql://db_transacao:3307/transacao
+      MYSQL_URL: jdbc:mysql://db_transacao:3306/transacao
       KAFKA_HOST: kafka:29092
       KAFKA_CONSUMER_GROUP_ID: minha-aplicacao
       KAFKA_AUTO-OFFSET-RESET: latest
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/auth/realms/transacao
+      KEYCLOAK_JWKS_URI: http://keycloak:8080/auth/realms/transacao/protocol/openid-connect/certs
     networks:
       - proposta-net
 
-
-
-  transacoes:
-    image: 'zupacademy/transacoes'
+  postgres:
+    image: 'postgres:alpine'
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
     ports:
-      - 7777:7777
+      - 5432:5432
+    networks:
+      - proposta-net
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: keycloak
+      POSTGRES_HOST: postgres
+
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - 18443:8443
+      - 18080:8080
+      - 19990:9990
+    networks:
+      - proposta-net
     depends_on:
+      # Just a delay to wait for postgres! This is not recommended!
       - kafka
+      - zookeeper
+      - transacao
+      - db_transacao
+      - postgres
     environment:
-      SERVER_PORT: 7777
-      LOG_LEVEL: INFO
-      KAFKA_HOST: "kafka:29092"
-    networks:
-      - proposta-net
+      DB_VENDOR: postgres
+      DB_ADDR: postgres
+      DB_PORT: 5432
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
 
-  vault:
-    image: vault:1.5.3
-    ports:
-      - 8200:8200
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
-      VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
-      VAULT_ADDR: http://127.0.0.1:8200
+
 
 volumes:
   mysql-volume:
+  postgres-volume:
 
 
 networks:

@@ -3,7 +3,6 @@ package br.com.zup.ot.transacao.transacao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -32,7 +31,7 @@ public class TransacaoController {
         if(trasacoesCartao.size()<1){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cartão não encontrado ou inválido");
         }
-        
+
         Page ultimasTransacoes = transacaoRepository.findByCartaoId(numeroCartao,paginacao);
 
         Page<EventoDeTransacaoDTO> ultimosEventosRegistrados = EventoDeTransacaoDTO.fromModel(ultimasTransacoes);
